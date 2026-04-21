@@ -15,10 +15,46 @@
             <button class="nav-btn active" onclick="mostraSezione('dashboard')">Dashboard</button>
             <button class="nav-btn" onclick="mostraSezione('spese')">Spese</button>
             <button class="nav-btn" onclick="mostraSezione('entrate')">Entrate</button>
-            <button class="nav-btn" onclick="mostraSezione('categorie')">Categorie</button>
-            <button class="nav-btn" onclick="mostraSezione('fonti')">Fonti</button>
+            <button class="nav-btn" onclick="mostraSezione('grafici')">Grafici</button>
+            <button class="nav-btn" onclick="apriSidebar()">⚙️</button>
         </div>
     </nav>
+
+    <!-- OVERLAY -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="chiudiSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Impostazioni</h2>
+            <button class="sidebar-close" onclick="chiudiSidebar()">✕</button>
+        </div>
+        <div class="sidebar-body">
+
+            <!-- Categorie -->
+            <div class="sidebar-section">
+                <h3>Categorie spese</h3>
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <input type="text" id="categoria-nome" placeholder="Nuova categoria">
+                </div>
+                <button class="btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="aggiungiCategoria()">Aggiungi</button>
+                <ul id="lista-categorie"></ul>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <!-- Fonti -->
+            <div class="sidebar-section">
+                <h3>Fonti entrate</h3>
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <input type="text" id="fonte-nome" placeholder="Nuova fonte">
+                </div>
+                <button class="btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="aggiungiFonte()">Aggiungi</button>
+                <ul id="lista-fonti"></ul>
+            </div>
+
+        </div>
+    </div>
 
     <!-- CONTENUTO PRINCIPALE -->
     <main>
@@ -119,44 +155,63 @@
             </div>
         </section>
 
-        <!-- SEZIONE CATEGORIE -->
-        <section id="categorie" class="sezione">
-            <h1>Categorie</h1>
+        <!-- SEZIONE GRAFICI -->
+        <section id="grafici" class="sezione">
+            <h1>Grafici</h1>
 
+            <!-- Filtro date -->
             <div class="form-card">
-                <h2>Aggiungi categoria</h2>
+                <h2>Intervallo di date</h2>
                 <div class="form-row">
-                    <input type="text" id="categoria-nome" placeholder="Nome categoria">
+                    <div class="form-group">
+                        <label>Data inizio</label>
+                        <input type="date" id="grafico-data-inizio">
+                    </div>
+                    <div class="form-group">
+                        <label>Data fine</label>
+                        <input type="date" id="grafico-data-fine">
+                    </div>
                 </div>
-                <button class="btn-primary" onclick="aggiungiCategoria()">Aggiungi</button>
-            </div>
-
-            <div class="lista-card">
-                <h2>Categorie esistenti</h2>
-                <ul id="lista-categorie"></ul>
-            </div>
-        </section>
-
-        <!-- SEZIONE FONTI -->
-        <section id="fonti" class="sezione">
-            <h1>Fonti entrate</h1>
-
-            <div class="form-card">
-                <h2>Aggiungi fonte</h2>
-                <div class="form-row">
-                    <input type="text" id="fonte-nome" placeholder="Nome fonte">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn-secondary" onclick="setIntervallo(30)">Ultimi 30 giorni</button>
+                    <button class="btn-secondary" onclick="setIntervallo('mese')">Questo mese</button>
+                    <button class="btn-secondary" onclick="setIntervallo(180)">Ultimi 6 mesi</button>
+                    <button class="btn-primary" onclick="aggiornaGrafici()">Aggiorna</button>
                 </div>
-                <button class="btn-primary" onclick="aggiungiFonte()">Aggiungi</button>
             </div>
 
+            <!-- Grafico torta -->
             <div class="lista-card">
-                <h2>Fonti esistenti</h2>
-                <ul id="lista-fonti"></ul>
+                <h2>Spese per categoria</h2>
+                <div id="legenda-torta" style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;"></div>
+                <div style="position: relative; width: 100%; max-width: 400px; margin: 0 auto; height: 300px;">
+                    <canvas id="grafico-torta" role="img" aria-label="Grafico torta spese per categoria"></canvas>
+                </div>
             </div>
+
+            <!-- Grafico barre -->
+            <div class="lista-card">
+                <h2>Entrate vs spese per mese</h2>
+                <div id="legenda-barre" style="display: flex; gap: 16px; margin-bottom: 12px;"></div>
+                <div style="position: relative; width: 100%; height: 300px;">
+                    <canvas id="grafico-barre" role="img" aria-label="Grafico barre entrate vs spese"></canvas>
+                </div>
+            </div>
+
+            <!-- Grafico linea -->
+            <div class="lista-card">
+                <h2>Andamento saldo</h2>
+                <div style="position: relative; width: 100%; height: 300px;">
+                    <canvas id="grafico-linea" role="img" aria-label="Grafico linea andamento saldo"></canvas>
+                </div>
+            </div>
+
         </section>
 
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script src="app.js"></script>
+
 </body>
 </html>

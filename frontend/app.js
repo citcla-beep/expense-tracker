@@ -391,8 +391,208 @@ async function eliminaFonte(id) {
     }
 }
 
+// Riferimenti ai grafici — li teniamo fuori dalle funzioni per poterli distruggere e ricreare
+let graficoTorta = null
+let graficoBarre = null
+let graficoLinea = null
 
+// Colori per le categorie
+const COLORI = [
+    "#185FA5", "#1D9E75", "#D85A30", "#8B5CF6",
+    "#F59E0B", "#EC4899", "#10B981", "#3B82F6",
+    "#EF4444", "#6B7280"
+]
 
+// Imposta l'intervallo date e aggiorna i grafici
+function setIntervallo(tipo) {
+    const oggi = new Date()
+    const fine = oggi.toISOString().split("T")[0]
+    let inizio
+
+    if (tipo === "mese") {
+        inizio = new Date(oggi.getFullYear(), oggi.getMonth(), 1).toISOString().split("T")[0]
+    } else {
+        const d = new Date()
+        d.setDate(d.getDate() - tipo)
+        inizio = d.toISOString().split("T")[0]
+    }
+
+    document.getElementById("grafico-data-inizio").value = inizio
+    document.getElementById("grafico-data-fine").value = fine
+    aggiornaGrafici()
+}
+
+function aggiornaGrafici() {
+    caricaGraficoTorta()
+    caricaGraficoBarre()
+    caricaGraficoLinea()
+}
+
+// Costruisce i parametri date per le chiamate API
+function getDateParams() {
+    const inizio = document.getElementById("grafico-data-inizio").value
+    const fine = document.getElementById("grafico-data-fine").value
+    let params = ""
+    if (inizio) params += `data_inizio=${inizio}&`
+    if (fine) params += `data_fine=${fine}`
+    return params ? `?${params}` : ""
+}
+
+// GRAFICO TORTA — spese per categoria
+async function caricaGraficoTorta() {
+    try {
+        const response = await fetch(`${API_URL}/api/grafici/spese-per-categoria${getDateParams()}`)
+        const dati = await response.json()
+
+        if (graficoTorta) graficoTorta.destroy()
+
+        if (dati.length === 0) {
+            document.getElementById("legenda-torta").innerHTML = `<p class="empty-state">Nessun dato disponibile</p>`
+            return
+        }
+
+        const labels = dati.map(d => d.categoria)
+        const valori = dati.map(d => d.totale)
+        const colori = dati.map((_, i) => COLORI[i % COLORI.length])
+
+        // Legenda custom
+        document.getElementById("legenda-torta").innerHTML = dati.map((d, i) => `
+            <span style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--color-text-secondary);">
+                <span style="width: 10px; height: 10px; border-radius: 2px; background: ${COLORI[i % COLORI.length]};"></span>
+                ${d.categoria} €${d.totale.toFixed(2)}
+            </span>
+        `).join("")
+
+        graficoTorta = new Chart(document.getElementById("grafico-torta"), {
+            type: "pie",
+            data: {
+                labels,
+                datasets: [{
+                    data: valori,
+                    backgroundColor: colori,
+                    borderWidth: 1,
+                    borderColor: "#fff"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        })
+
+    } catch (error) {
+        console.error("Errore grafico torta:", error)
+    }
+}
+
+// GRAFICO BARRE — entrate vs spese
+async function caricaGraficoBarre() {
+    try {
+        const response = await fetch(`${API_URL}/api/grafici/entrate-vs-spese${getDateParams()}`)
+        const dati = await response.json()
+
+        if (graficoBarre) graficoBarre.destroy()
+
+        if (dati.length === 0) {
+            document.getElementById("legenda-barre").innerHTML = `<p class="empty-state">Nessun dato disponibile</p>`
+            return
+        }
+
+        // Legenda custom
+        document.getElementById("legenda-barre").innerHTML = `
+            <span style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--color-text-secondary);">
+                <span style="width: 10px; height: 10px; border-radius: 2px; background: #1D9E75;"></span> Entrate
+            </span>
+            <span style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--color-text-secondary);">
+                <span style="width: 10px; height: 10px; border-radius: 2px; background: #D85A30;"></span> Spese
+            </span>
+        `
+
+        graficoBarre = new Chart(document.getElementById("grafico-barre"), {
+            type: "bar",
+            data: {
+                labels: dati.map(d => d.mese),
+                datasets: [
+                    {
+                        label: "Entrate",
+                        data: dati.map(d => d.entrate),
+                        backgroundColor: "#1D9E75"
+                    },
+                    {
+                        label: "Spese",
+                        data: dati.map(d => d.spese),
+                        backgroundColor: "#D85A30"
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { autoSkip: false } }
+                }
+            }
+        })
+
+    } catch (error) {
+        console.error("Errore grafico barre:", error)
+    }
+}
+
+// GRAFICO LINEA — andamento saldo
+async function caricaGraficoLinea() {
+    try {
+        const response = await fetch(`${API_URL}/api/grafici/andamento-saldo${getDateParams()}`)
+        const dati = await response.json()
+
+        if (graficoLinea) graficoLinea.destroy()
+
+        if (dati.length === 0) return
+
+        graficoLinea = new Chart(document.getElementById("grafico-linea"), {
+            type: "line",
+            data: {
+                labels: dati.map(d => d.data),
+                datasets: [{
+                    label: "Saldo",
+                    data: dati.map(d => d.saldo),
+                    borderColor: "#185FA5",
+                    backgroundColor: "rgba(24, 95, 165, 0.1)",
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: (v) => `€${v.toLocaleString()}`
+                        }
+                    }
+                }
+            }
+        })
+
+    } catch (error) {
+        console.error("Errore grafico linea:", error)
+    }
+}
+
+function apriSidebar() {
+    document.getElementById("sidebar").classList.add("aperta")
+    document.getElementById("sidebar-overlay").classList.add("visibile")
+}
+
+function chiudiSidebar() {
+    document.getElementById("sidebar").classList.remove("aperta")
+    document.getElementById("sidebar-overlay").classList.remove("visibile")
+}
 
 // Viene eseguito al caricamento della pagina
 document.addEventListener("DOMContentLoaded", () => {
@@ -402,4 +602,5 @@ document.addEventListener("DOMContentLoaded", () => {
     caricaEntrate()
     caricaCategorie()
     caricaFonti()
+    setIntervallo(30)  // ← carica i grafici con gli ultimi 30 giorni di default
 })

@@ -100,3 +100,17 @@ class MovimentoOut(BaseModel):
     tipo_movimento:str
 
     model_config={"from_attributes":True}
+
+# --- GRAFICI ---
+class SpesePerCategoria(BaseModel):
+    categoria: str
+    totale: float
+
+class EntrateVsSpese(BaseModel):
+    mese : str
+    entrate:float
+    spese:float
+
+class AndamentoSaldo(BaseModel):
+    data:date
+    saldo:float
