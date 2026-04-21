@@ -239,6 +239,85 @@ async function caricaUltimiMovimenti() {
     }
 }
 
+// Carica le categorie e popola tutti i dropdown
+async function caricaCategorie() {
+    try {
+        const response = await fetch(`${API_URL}/api/categorie`)
+        const categorie = await response.json()
+
+        // Popola il select nel form aggiungi spesa
+        const selectSpesa = document.getElementById("spesa-categoria")
+        selectSpesa.innerHTML = `<option value="">Seleziona categoria</option>`
+        categorie.forEach(c => {
+            selectSpesa.innerHTML += `<option value="${c.nome}">${c.nome}</option>`
+        })
+
+        // Popola il select nel form cerca spese
+        const selectFiltro = document.getElementById("filtro-categoria")
+        selectFiltro.innerHTML = `<option value="">Tutte le categorie</option>`
+        categorie.forEach(c => {
+            selectFiltro.innerHTML += `<option value="${c.nome}">${c.nome}</option>`
+        })
+
+        // Popola la lista nella sezione categorie
+        const lista = document.getElementById("lista-categorie")
+        if (categorie.length === 0) {
+            lista.innerHTML = `<p class="empty-state">Nessuna categoria</p>`
+            return
+        }
+        lista.innerHTML = categorie.map(c => `
+            <li class="list-item">
+                <div class="list-item-info">
+                    <p class="list-item-nome">${c.nome}</p>
+                </div>
+                <button class="btn-delete" onclick="eliminaCategoria(${c.id})">✕</button>
+            </li>
+        `).join("")
+
+    } catch (error) {
+        console.error("Errore nel caricamento delle categorie:", error)
+    }
+}
+
+async function aggiungiCategoria() {
+    const nome = document.getElementById("categoria-nome").value.trim()
+
+    if (!nome) {
+        alert("Inserisci un nome per la categoria")
+        return
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/categorie`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome })
+        })
+
+        if (!response.ok) {
+            const errore = await response.json()
+            alert(errore.detail)
+            return
+        }
+
+        document.getElementById("categoria-nome").value = ""
+        caricaCategorie()
+
+    } catch (error) {
+        console.error("Errore nell'aggiunta della categoria:", error)
+    }
+}
+
+async function eliminaCategoria(id) {
+    if (!confirm("Sei sicuro di voler eliminare questa categoria?")) return
+
+    try {
+        await fetch(`${API_URL}/api/categorie/${id}`, { method: "DELETE" })
+        caricaCategorie()
+    } catch (error) {
+        console.error("Errore nell'eliminazione della categoria:", error)
+    }
+}
 
 // Viene eseguito al caricamento della pagina
 document.addEventListener("DOMContentLoaded", () => {
@@ -246,4 +325,5 @@ document.addEventListener("DOMContentLoaded", () => {
     caricaUltimiMovimenti()
     caricaSpese()
     caricaEntrate()
+    caricaCategorie()
 })

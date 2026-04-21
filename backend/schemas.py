@@ -4,24 +4,9 @@ from typing import Optional
 from enum import Enum
 
 
-class CategoriaSpesa(str, Enum):
-    cibo            = "Cibo"
-    trasporti       = "Trasporti"
-    casa            = "Casa"
-    salute          = "Salute"
-    svago           = "Svago"
-    abbigliamento   = "Abbigliamento"
-    tecnologia      = "Tecnologia"
-    sport           = "Sport"
-    istruzione      = "Istruzione"
-    altro           = "Altro"
-
-
-# --- SPESE ---
-
 class SpesaCreate(BaseModel):
     importo: float
-    categoria: CategoriaSpesa
+    categoria: str  # torna ad essere una stringa libera
     descrizione: Optional[str] = None
     data: date = date.today()
 
@@ -32,11 +17,20 @@ class SpesaCreate(BaseModel):
             raise ValueError("L'importo deve essere maggiore di zero")
         return abs(v)
 
+# Aggiungi questi due schema
+class CategoriaCreate(BaseModel):
+    nome: str
+
+class CategoriaOut(BaseModel):
+    id: int
+    nome: str
+
+    model_config = {"from_attributes": True}
 
 class SpesaOut(BaseModel):
     id: int
     importo: float
-    categoria: CategoriaSpesa
+    categoria: str
     descrizione: Optional[str]
     data: date
     tipo: str

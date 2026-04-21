@@ -18,6 +18,27 @@
         </div>
     </nav>
 
+    <!-- Navbar -->
+    <button class="nav-btn" onclick="mostraSezione('categorie')">Categorie</button>
+    
+    <!-- Sezione categorie -->
+    <section id="categorie" class="sezione">
+        <h1>Categorie</h1>
+    
+        <div class="form-card">
+            <h2>Aggiungi categoria</h2>
+            <div class="form-row">
+                <input type="text" id="categoria-nome" placeholder="Nome categoria">
+            </div>
+            <button class="btn-primary" onclick="aggiungiCategoria()">Aggiungi</button>
+        </div>
+    
+        <div class="lista-card">
+            <h2>Categorie esistenti</h2>
+            <ul id="lista-categorie"></ul>
+        </div>
+    </section>
+
     <!-- CONTENUTO PRINCIPALE -->
     <main>
 
@@ -60,16 +81,7 @@
                     <input type="number" id="spesa-importo" placeholder="Importo €" min="0" step="0.01">
                     <select id="spesa-categoria">
                         <option value="">Seleziona categoria</option>
-                        <option value="Cibo">Cibo</option>
-                        <option value="Trasporti">Trasporti</option>
-                        <option value="Casa">Casa</option>
-                        <option value="Salute">Salute</option>
-                        <option value="Svago">Svago</option>
-                        <option value="Abbigliamento">Abbigliamento</option>
-                        <option value="Tecnologia">Tecnologia</option>
-                        <option value="Sport">Sport</option>
-                        <option value="Istruzione">Istruzione</option>
-                        <option value="Altro">Altro</option>
+                        <!-- le categorie arriveranno da JavaScript -->
                     </select>
                     <input type="date" id="spesa-data">
                     <input type="text" id="spesa-descrizione" placeholder="Descrizione (opzionale)">
@@ -81,16 +93,7 @@
             <div class="form-row">
                 <select id="filtro-categoria">
                     <option value="">Tutte le categorie</option>
-                    <option value="Cibo">Cibo</option>
-                    <option value="Trasporti">Trasporti</option>
-                    <option value="Casa">Casa</option>
-                    <option value="Salute">Salute</option>
-                    <option value="Svago">Svago</option>
-                    <option value="Abbigliamento">Abbigliamento</option>
-                    <option value="Tecnologia">Tecnologia</option>
-                    <option value="Sport">Sport</option>
-                    <option value="Istruzione">Istruzione</option>
-                    <option value="Altro">Altro</option>
+                    <!-- le categorie arriveranno da JavaScript -->
                 </select>
                 <input type="date" id="filtro-data-inizio" placeholder="Data inizio">
                 <input type="date" id="filtro-data-fine" placeholder="Data fine">

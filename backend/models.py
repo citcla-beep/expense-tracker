@@ -3,7 +3,13 @@ from datetime import date
 from database import Base
 
 #con sqlalchemy definiamo i modelli del database come classi che ereditano da Base, ogni classe rappresenta una tabella del database e ogni attributo rappresenta una colonna della tabella
+class Categoria(Base):
+    __tablename__ = "categorie"
 
+    id    = Column(Integer, primary_key=True, index=True)
+    nome  = Column(String, nullable=False, unique=True)
+
+    
 class Spesa(Base):
     __tablename__ = "spese" #nome della tabella nel database
 
