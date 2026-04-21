@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import engine, SessionLocal
 import models
-from routers import spese, entrate, riepilogo, categorie
+from routers import spese, entrate, riepilogo, categorie, categorieEntrate
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine) #crea le tabelle nel database se non esistono già, usa il motore per collegarsi al database e creare le tabelle in base ai modelli definiti in models.py
@@ -20,6 +20,18 @@ def crea_categorie_default(db):
             db.add(models.Categoria(nome=nome))
     db.commit()
 
+def crea_categorie_default(db):
+    categorie_default = [
+         "Stipendio","Regalo", "Investimento","Altro"
+    ]
+    for nome in categorie_default:
+        esistente = db.query(models.CategorieEntrate).filter(
+            models.CategorieEntrate.nome == nome
+        ).first()
+        if not esistente:
+            db.add(models.CategorieEntrate(nome=nome))
+    db.commit()
+
 db = SessionLocal()
 crea_categorie_default(db)
 db.close()
@@ -36,6 +48,7 @@ app.include_router(spese.router) #include il router delle spese, in questo modo 
 app.include_router(entrate.router) #include il router delle entrate, in questo modo tutte le rotte definite in entrate.py saranno disponibili nell'applicazione
 app.include_router(riepilogo.router) #include il router del riepilogo, in questo modo tutte le rotte definite in riepilogo.py saranno disponibili nell'applicazione
 app.include_router(categorie.router) #include il router delle categorie, in questo modo tutte le rotte definite in categorie.py saranno disponibili nell'applicazione
+app.include_router(categorieEntrate.router) #include il router delle categorie entrate, in questo modo tutte le rotte definite in categorieEntrate.py saranno disponibili nell'applicazione
 
 @app.get("/")
 def root():

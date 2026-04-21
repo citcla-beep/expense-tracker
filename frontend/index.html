@@ -15,29 +15,10 @@
             <button class="nav-btn active" onclick="mostraSezione('dashboard')">Dashboard</button>
             <button class="nav-btn" onclick="mostraSezione('spese')">Spese</button>
             <button class="nav-btn" onclick="mostraSezione('entrate')">Entrate</button>
+            <button class="nav-btn" onclick="mostraSezione('categorie')">Categorie</button>
+            <button class="nav-btn" onclick="mostraSezione('fonti')">Fonti</button>
         </div>
     </nav>
-
-    <!-- Navbar -->
-    <button class="nav-btn" onclick="mostraSezione('categorie')">Categorie</button>
-    
-    <!-- Sezione categorie -->
-    <section id="categorie" class="sezione">
-        <h1>Categorie</h1>
-    
-        <div class="form-card">
-            <h2>Aggiungi categoria</h2>
-            <div class="form-row">
-                <input type="text" id="categoria-nome" placeholder="Nome categoria">
-            </div>
-            <button class="btn-primary" onclick="aggiungiCategoria()">Aggiungi</button>
-        </div>
-    
-        <div class="lista-card">
-            <h2>Categorie esistenti</h2>
-            <ul id="lista-categorie"></ul>
-        </div>
-    </section>
 
     <!-- CONTENUTO PRINCIPALE -->
     <main>
@@ -64,6 +45,7 @@
                     <p class="metric-value" id="spese-pianificate">€0.00</p>
                 </div>
             </div>
+
             <div class="lista-card">
                 <h2>Ultimi movimenti</h2>
                 <ul id="lista-movimenti"></ul>
@@ -74,38 +56,37 @@
         <section id="spese" class="sezione">
             <h1>Spese</h1>
 
-            <!-- Form per aggiungere una spesa -->
+            <!-- Form aggiungi spesa -->
             <div class="form-card">
                 <h2>Aggiungi spesa</h2>
                 <div class="form-row">
                     <input type="number" id="spesa-importo" placeholder="Importo €" min="0" step="0.01">
                     <select id="spesa-categoria">
                         <option value="">Seleziona categoria</option>
-                        <!-- le categorie arriveranno da JavaScript -->
                     </select>
                     <input type="date" id="spesa-data">
                     <input type="text" id="spesa-descrizione" placeholder="Descrizione (opzionale)">
                 </div>
                 <button class="btn-primary" onclick="aggiungiSpesa()">Aggiungi</button>
             </div>
-                    <div class="form-card">
-            <h2>Cerca spese</h2>
-            <div class="form-row">
-                <select id="filtro-categoria">
-                    <option value="">Tutte le categorie</option>
-                    <!-- le categorie arriveranno da JavaScript -->
-                </select>
-                <input type="date" id="filtro-data-inizio" placeholder="Data inizio">
-                <input type="date" id="filtro-data-fine" placeholder="Data fine">
-                <input type="text" id="filtro-descrizione" placeholder="Cerca nella descrizione">
-            </div>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn-primary" onclick="cercaSpese()">Cerca</button>
-                <button class="btn-secondary" onclick="resetFiltri()">Reset</button>
-            </div>
-        </div>
 
-        
+            <!-- Form cerca spese -->
+            <div class="form-card">
+                <h2>Cerca spese</h2>
+                <div class="form-row">
+                    <select id="filtro-categoria">
+                        <option value="">Tutte le categorie</option>
+                    </select>
+                    <input type="date" id="filtro-data-inizio" placeholder="Data inizio">
+                    <input type="date" id="filtro-data-fine" placeholder="Data fine">
+                    <input type="text" id="filtro-descrizione" placeholder="Cerca nella descrizione">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-primary" onclick="cercaSpese()">Cerca</button>
+                    <button class="btn-secondary" onclick="resetFiltri()">Reset</button>
+                </div>
+            </div>
+
             <!-- Lista spese -->
             <div class="lista-card">
                 <h2>Storico spese</h2>
@@ -117,17 +98,13 @@
         <section id="entrate" class="sezione">
             <h1>Entrate</h1>
 
-            <!-- Form per aggiungere un'entrata -->
+            <!-- Form aggiungi entrata -->
             <div class="form-card">
                 <h2>Aggiungi entrata</h2>
                 <div class="form-row">
                     <input type="number" id="entrata-importo" placeholder="Importo €" min="0" step="0.01">
                     <select id="entrata-fonte">
                         <option value="">Seleziona fonte</option>
-                        <option value="Stipendio">Stipendio</option>
-                        <option value="Regalo">Regalo</option>
-                        <option value="Investimento">Investimento</option>
-                        <option value="Altro">Altro</option>
                     </select>
                     <input type="date" id="entrata-data">
                     <input type="text" id="entrata-descrizione" placeholder="Descrizione (opzionale)">
@@ -139,6 +116,42 @@
             <div class="lista-card">
                 <h2>Storico entrate</h2>
                 <ul id="lista-entrate"></ul>
+            </div>
+        </section>
+
+        <!-- SEZIONE CATEGORIE -->
+        <section id="categorie" class="sezione">
+            <h1>Categorie</h1>
+
+            <div class="form-card">
+                <h2>Aggiungi categoria</h2>
+                <div class="form-row">
+                    <input type="text" id="categoria-nome" placeholder="Nome categoria">
+                </div>
+                <button class="btn-primary" onclick="aggiungiCategoria()">Aggiungi</button>
+            </div>
+
+            <div class="lista-card">
+                <h2>Categorie esistenti</h2>
+                <ul id="lista-categorie"></ul>
+            </div>
+        </section>
+
+        <!-- SEZIONE FONTI -->
+        <section id="fonti" class="sezione">
+            <h1>Fonti entrate</h1>
+
+            <div class="form-card">
+                <h2>Aggiungi fonte</h2>
+                <div class="form-row">
+                    <input type="text" id="fonte-nome" placeholder="Nome fonte">
+                </div>
+                <button class="btn-primary" onclick="aggiungiFonte()">Aggiungi</button>
+            </div>
+
+            <div class="lista-card">
+                <h2>Fonti esistenti</h2>
+                <ul id="lista-fonti"></ul>
             </div>
         </section>
 

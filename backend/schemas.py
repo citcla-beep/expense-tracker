@@ -38,16 +38,9 @@ class SpesaOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
-# --- ENTRATE ---
-class FonteEntrata(str, Enum):
-    stipendio      = "Stipendio"
-    regalo         = "Regalo"
-    investimento    = "Investimento"
-    altro          = "Altro"
-
 class EntrataCreate(BaseModel):
     importo: float
-    fonte: FonteEntrata
+    fonte: str
     descrizione: Optional[str] = None
     data: date = date.today()
 
@@ -57,12 +50,20 @@ class EntrataCreate(BaseModel):
         if v <= 0:
             raise ValueError("L'importo deve essere maggiore di zero")
         return abs(v)
+    
+class CategorieEntrateCreate(BaseModel):
+    nome: str
 
+class CategorieEntrateOut(BaseModel):
+    id: int
+    nome: str
+
+    model_config = {"from_attributes": True}
 
 class EntrataOut(BaseModel):
     id: int
     importo: float
-    fonte: FonteEntrata
+    fonte: str
     descrizione: Optional[str]
     data: date
 

@@ -9,7 +9,15 @@ class Categoria(Base):
     id    = Column(Integer, primary_key=True, index=True)
     nome  = Column(String, nullable=False, unique=True)
 
-    
+
+class CategoriaEntrate(Base):
+    __tablename__ = "categorie_entrate"
+
+    id    = Column(Integer, primary_key=True, index=True)
+    nome  = Column(String, nullable=False, unique=True)
+
+
+
 class Spesa(Base):
     __tablename__ = "spese" #nome della tabella nel database
 

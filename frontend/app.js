@@ -319,6 +319,81 @@ async function eliminaCategoria(id) {
     }
 }
 
+async function caricaFonti() {
+    try {
+        const response = await fetch(`${API_URL}/api/fonti`)
+        const fonti = await response.json()
+
+        // Popola il select nel form aggiungi entrata
+        const selectEntrata = document.getElementById("entrata-fonte")
+        selectEntrata.innerHTML = `<option value="">Seleziona fonte</option>`
+        fonti.forEach(f => {
+            selectEntrata.innerHTML += `<option value="${f.nome}">${f.nome}</option>`
+        })
+
+        // Popola la lista nella sezione fonti
+        const lista = document.getElementById("lista-fonti")
+        if (fonti.length === 0) {
+            lista.innerHTML = `<p class="empty-state">Nessuna fonte</p>`
+            return
+        }
+        lista.innerHTML = fonti.map(f => `
+            <li class="list-item">
+                <div class="list-item-info">
+                    <p class="list-item-nome">${f.nome}</p>
+                </div>
+                <button class="btn-delete" onclick="eliminaFonte(${f.id})">✕</button>
+            </li>
+        `).join("")
+
+    } catch (error) {
+        console.error("Errore nel caricamento delle fonti:", error)
+    }
+}
+
+async function aggiungiFonte() {
+    const nome = document.getElementById("fonte-nome").value.trim()
+
+    if (!nome) {
+        alert("Inserisci un nome per la fonte")
+        return
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/fonti`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome })
+        })
+
+        if (!response.ok) {
+            const errore = await response.json()
+            alert(errore.detail)
+            return
+        }
+
+        document.getElementById("fonte-nome").value = ""
+        caricaFonti()
+
+    } catch (error) {
+        console.error("Errore nell'aggiunta della fonte:", error)
+    }
+}
+
+async function eliminaFonte(id) {
+    if (!confirm("Sei sicuro di voler eliminare questa fonte?")) return
+
+    try {
+        await fetch(`${API_URL}/api/fonti/${id}`, { method: "DELETE" })
+        caricaFonti()
+    } catch (error) {
+        console.error("Errore nell'eliminazione della fonte:", error)
+    }
+}
+
+
+
+
 // Viene eseguito al caricamento della pagina
 document.addEventListener("DOMContentLoaded", () => {
     caricaDashboard()
@@ -326,4 +401,5 @@ document.addEventListener("DOMContentLoaded", () => {
     caricaSpese()
     caricaEntrate()
     caricaCategorie()
+    caricaFonti()
 })
