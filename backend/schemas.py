@@ -1,7 +1,6 @@
 from pydantic import BaseModel, field_validator
 from datetime import date
 from typing import Optional
-from enum import Enum
 
 
 class SpesaCreate(BaseModel):
@@ -51,10 +50,10 @@ class EntrataCreate(BaseModel):
             raise ValueError("L'importo deve essere maggiore di zero")
         return abs(v)
     
-class CategorieEntrateCreate(BaseModel):
+class FontiCreate(BaseModel):
     nome: str
 
-class CategorieEntrateOut(BaseModel):
+class FontiOut(BaseModel):
     id: int
     nome: str
 

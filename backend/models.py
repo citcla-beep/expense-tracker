@@ -10,8 +10,8 @@ class Categoria(Base):
     nome  = Column(String, nullable=False, unique=True)
 
 
-class CategoriaEntrate(Base):
-    __tablename__ = "categorie_entrate"
+class Fonti(Base):
+    __tablename__ = "fonti"
 
     id    = Column(Integer, primary_key=True, index=True)
     nome  = Column(String, nullable=False, unique=True)

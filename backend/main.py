@@ -20,20 +20,22 @@ def crea_categorie_default(db):
             db.add(models.Categoria(nome=nome))
     db.commit()
 
-def crea_categorie_default(db):
-    categorie_default = [
+def crea_fonti_default(db):
+    fonti_default = [
          "Stipendio","Regalo", "Investimento","Altro"
     ]
-    for nome in categorie_default:
-        esistente = db.query(models.CategorieEntrate).filter(
-            models.CategorieEntrate.nome == nome
+    for nome in fonti_default:
+        esistente = db.query(models.Fonti).filter(
+            models.Fonti.nome == nome
         ).first()
         if not esistente:
-            db.add(models.CategorieEntrate(nome=nome))
+            db.add(models.Fonti(nome=nome))
     db.commit()
 
 db = SessionLocal()
 crea_categorie_default(db)
+crea_fonti_default(db)
+
 db.close()
 
 app = FastAPI(title="Expense Tracker")
