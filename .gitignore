@@ -1,12 +1,4 @@
-# Database locale
-backend/expense_tracker.db
-
-# Ambiente virtuale (pesante e inutile da condividere)
-backend/venv/
-
-# Cache Python
+venv/
 __pycache__/
 *.pyc
-
-# File di sistema
-.DS_Store
+.env

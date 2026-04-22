@@ -15,6 +15,8 @@
             <button class="nav-btn active" onclick="mostraSezione('dashboard')">Dashboard</button>
             <button class="nav-btn" onclick="mostraSezione('spese')">Spese</button>
             <button class="nav-btn" onclick="mostraSezione('entrate')">Entrate</button>
+            <button class="nav-btn" onclick="mostraSezione('conti')">Conti</button>
+            <button class="nav-btn" onclick="mostraSezione('trasferimenti')">Trasferimenti</button>
             <button class="nav-btn" onclick="mostraSezione('grafici')">Grafici</button>
             <button class="nav-btn" onclick="apriSidebar()">⚙️</button>
         </div>
@@ -100,6 +102,9 @@
                     <select id="spesa-categoria">
                         <option value="">Seleziona categoria</option>
                     </select>
+                    <select id="spesa-conto">
+                        <option value="">Seleziona conto (opzionale)</option>
+                    </select>
                     <input type="date" id="spesa-data">
                     <input type="text" id="spesa-descrizione" placeholder="Descrizione (opzionale)">
                 </div>
@@ -142,6 +147,9 @@
                     <select id="entrata-fonte">
                         <option value="">Seleziona fonte</option>
                     </select>
+                    <select id="entrata-conto">
+                        <option value="">Seleziona conto (opzionale)</option>
+                    </select>
                     <input type="date" id="entrata-data">
                     <input type="text" id="entrata-descrizione" placeholder="Descrizione (opzionale)">
                 </div>
@@ -155,11 +163,70 @@
             </div>
         </section>
 
+        <!-- SEZIONE CONTI -->
+        <section id="conti" class="sezione">
+            <h1>Conti</h1>
+
+            <div class="form-card">
+                <h2>Aggiungi conto</h2>
+                <div class="form-row">
+                    <input type="text" id="conto-nome" placeholder="Nome conto (es. Conto corrente)">
+                    <input type="number" id="conto-saldo-iniziale" placeholder="Saldo iniziale € (opzionale)" min="0" step="0.01">
+                </div>
+                <button class="btn-primary" onclick="aggiungiConto()">Aggiungi</button>
+            </div>
+
+            <div class="lista-card">
+                <h2>I tuoi conti</h2>
+                <ul id="lista-conti"></ul>
+            </div>
+        </section>
+
+        <!-- SEZIONE TRASFERIMENTI -->
+        <section id="trasferimenti" class="sezione">
+            <h1>Trasferimenti</h1>
+
+            <div class="form-card">
+                <h2>Nuovo trasferimento</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Da</label>
+                        <select id="trasferimento-origine">
+                            <option value="">Conto origine</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>A</label>
+                        <select id="trasferimento-destinazione">
+                            <option value="">Conto destinazione</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Importo</label>
+                        <input type="number" id="trasferimento-importo" placeholder="Importo €" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="trasferimento-data">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrizione</label>
+                        <input type="text" id="trasferimento-descrizione" placeholder="Descrizione (opzionale)">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="aggiungiTrasferimento()">Trasferisci</button>
+            </div>
+
+            <div class="lista-card">
+                <h2>Storico trasferimenti</h2>
+                <ul id="lista-trasferimenti"></ul>
+            </div>
+        </section>
+
         <!-- SEZIONE GRAFICI -->
         <section id="grafici" class="sezione">
             <h1>Grafici</h1>
 
-            <!-- Filtro date -->
             <div class="form-card">
                 <h2>Intervallo di date</h2>
                 <div class="form-row">
@@ -180,7 +247,6 @@
                 </div>
             </div>
 
-            <!-- Grafico torta -->
             <div class="lista-card">
                 <h2>Spese per categoria</h2>
                 <div id="legenda-torta" style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;"></div>
@@ -189,7 +255,6 @@
                 </div>
             </div>
 
-            <!-- Grafico barre -->
             <div class="lista-card">
                 <h2>Entrate vs spese per mese</h2>
                 <div id="legenda-barre" style="display: flex; gap: 16px; margin-bottom: 12px;"></div>
@@ -198,7 +263,6 @@
                 </div>
             </div>
 
-            <!-- Grafico linea -->
             <div class="lista-card">
                 <h2>Andamento saldo</h2>
                 <div style="position: relative; width: 100%; height: 300px;">

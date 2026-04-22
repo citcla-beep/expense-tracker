@@ -8,6 +8,7 @@ class SpesaCreate(BaseModel):
     categoria: str  # torna ad essere una stringa libera
     descrizione: Optional[str] = None
     data: date = date.today()
+    conto_id :int
 
     @field_validator("importo")
     @classmethod
@@ -33,6 +34,8 @@ class SpesaOut(BaseModel):
     descrizione: Optional[str]
     data: date
     tipo: str
+    conto_id :int
+
 
     model_config = {"from_attributes": True}
 
@@ -42,6 +45,8 @@ class EntrataCreate(BaseModel):
     fonte: str
     descrizione: Optional[str] = None
     data: date = date.today()
+    conto_id :int
+
 
     @field_validator("importo")
     @classmethod
@@ -65,6 +70,7 @@ class EntrataOut(BaseModel):
     fonte: str
     descrizione: Optional[str]
     data: date
+    conto_id :int
 
     model_config = {"from_attributes": True}
 
@@ -114,3 +120,39 @@ class EntrateVsSpese(BaseModel):
 class AndamentoSaldo(BaseModel):
     data:date
     saldo:float
+
+# -- CONTI E GIROCONTI ---
+class ContoCreate(BaseModel):
+    nome: str
+    saldo_iniziale : float = 0.0
+
+class ContoOut(BaseModel):
+    id: int
+    nome: str
+    saldo_iniziale: float
+
+    model_config = {"from_attributes": True}
+
+class TrasferimentoCreate(BaseModel):
+    importo: float
+    conto_origine_id: int
+    conto_destinazione_id: int  # ← era "conto_destinatario_id"
+    descrizione: Optional[str] = None
+    data: date = date.today()
+
+    @field_validator("importo")
+    @classmethod
+    def importo_positivo(cls, v):
+        if v <= 0:
+            raise ValueError("L'importo deve essere maggiore di zero")
+        return abs(v)
+
+class TrasferimentoOut(BaseModel):
+    id: int
+    importo: float
+    conto_origine_id: int
+    conto_destinazione_id: int  # ← era "conto_destinatario_id"
+    descrizione: Optional[str]
+    data: date
+
+    model_config = {"from_attributes": True}

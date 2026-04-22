@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import engine, SessionLocal
 import models
-from routers import spese, entrate, riepilogo, categorie, categorieEntrate, grafici
+from routers import spese, entrate, riepilogo, categorie, categorieEntrate, grafici, conti, trasferimenti
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine) #crea le tabelle nel database se non esistono già, usa il motore per collegarsi al database e creare le tabelle in base ai modelli definiti in models.py
@@ -52,6 +52,8 @@ app.include_router(riepilogo.router) #include il router del riepilogo, in questo
 app.include_router(categorie.router) #include il router delle categorie, in questo modo tutte le rotte definite in categorie.py saranno disponibili nell'applicazione
 app.include_router(categorieEntrate.router) #include il router delle categorie entrate, in questo modo tutte le rotte definite in categorieEntrate.py saranno disponibili nell'applicazione
 app.include_router(grafici.router) #include il router dei grafici, in questo modo tutte le rotte definite in grafici.py saranno disponibili nell'applicazione
+app.include_router(conti.router) #include il router dei conti, in questo modo tutte le rotte definite in conti.py saranno disponibili nell'applicazione
+app.include_router(trasferimenti.router) #include il router dei trasferimenti, in questo modo tutte le rotte definite in trasferimenti.py saranno disponibili nell'applicazione
 
 
 @app.get("/")

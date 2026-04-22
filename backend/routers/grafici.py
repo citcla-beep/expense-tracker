@@ -21,7 +21,8 @@ def spese_per_categoria(
         func.sum(models.Spesa.importo).label("totale")
     ).filter(
         models.Spesa.data >= data_inizio,
-        models.Spesa.data <= data_fine
+        models.Spesa.data <= data_fine,
+        models.Spesa.data <= date.today()  # escludi spese future
     ).group_by(models.Spesa.categoria).all()
 
     return [SpesePerCategoria(categoria=categoria, totale=totale) for categoria, totale in risultato]
@@ -38,7 +39,8 @@ def entrate_vs_spese(
         func.sum(models.Entrata.importo).label("totale_entrate")
     ).filter(
         models.Entrata.data >= data_inizio,
-        models.Entrata.data <= data_fine
+        models.Entrata.data <= data_fine,
+        models.Entrata.data <= date.today()  # escludi entrate future
     ).group_by("mese").subquery()
 
     spese_sub = db.query(
@@ -46,7 +48,8 @@ def entrate_vs_spese(
         func.sum(models.Spesa.importo).label("totale_spese")
     ).filter(
         models.Spesa.data >= data_inizio,
-        models.Spesa.data <= data_fine
+        models.Spesa.data <= data_fine,
+        models.Spesa.data <= date.today()  # escludi spese future
     ).group_by("mese").subquery()
 
     risultato = db.query(
@@ -76,7 +79,8 @@ def andamento_saldo(
         func.sum(models.Entrata.importo).label("totale_entrate")
     ).filter(
         models.Entrata.data >= data_inizio,
-        models.Entrata.data <= data_fine
+        models.Entrata.data <= data_fine,
+        models.Entrata.data <= date.today()  # escludi entrate future
     ).group_by(models.Entrata.data).subquery()
 
     spese_sub = db.query(
@@ -84,7 +88,8 @@ def andamento_saldo(
         func.sum(models.Spesa.importo).label("totale_spese")
     ).filter(
         models.Spesa.data >= data_inizio,
-        models.Spesa.data <= data_fine
+        models.Spesa.data <= data_fine,
+        models.Spesa.data <= date.today()  # escludi spese future
     ).group_by(models.Spesa.data).subquery()
 
     risultato = db.query(
